@@ -4,27 +4,31 @@ import axios from 'axios';
 function MovieList() {
   const [movies, setMovies] = useState([]);
 
-  
+  useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/allmovies1`);
-        console.log('Response:', response.data);  
-        setMovies(response.data.results || response.data);  
+        // Fetching popular movies from the new endpoint
+        const response = await axios.get('http://localhost:8080/popular');
+        console.log('Response:', response.data);  // Log to check the structure
+
+        // Assuming the data you need is in response.data.results
+        setMovies(response.data.results || response.data);  // Set movies array based on response
       } catch (error) {
-        console.error('Error fetching movies:', error);
+        console.error('Error fetching popular movies:', error);
       }
     };
-useEffect(() => {
+
     fetchMovies();
   }, []);
 
   return (
     <div className="movie-list">
-      <h2>Movies</h2>
+      <h2>Popular Movies</h2>
       <div className="movie-grid">
         {movies && movies.length > 0 ? (
           movies.map((movie) => (
             <div key={movie.id} className="movie-card">
+              {/* Image source constructed with the backend URL */}
               <img src={`http://localhost:8080/${movie.poster}`} alt={movie.name} />
               <h3>{movie.name}</h3>
               <p>Release Date: {movie.date}</p>
@@ -32,7 +36,7 @@ useEffect(() => {
             </div>
           ))
         ) : (
-          <p>No movies found</p>
+          <p>No popular movies found</p>
         )}
       </div>
     </div>
